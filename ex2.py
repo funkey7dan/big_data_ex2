@@ -1,7 +1,9 @@
 import math
+from pprint import pprint
 
 def myData():
-    web = [{'URL': 'animals.com','tokens': ['jaguar','mammal','felidae','family'],'linksTo': ['pets.org','nature.net']},
+    web = [{'URL': 'animals.com','tokens': ['jaguar','mammal','felidae','family','food'],
+            'linksTo': ['pets.org','nature.net']},
            {'URL': 'pets.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],
             'linksTo': ['animals.com']},{'URL': 'nature.net','tokens': ['trees','plants','flowers','nature','outdoors'],
                                          'linksTo': ['animals.com','hiking.info']},
@@ -9,9 +11,10 @@ def myData():
             'linksTo': ['nature.net','camping.com']},
            {'URL': 'camping.com','tokens': ['camping','tents','outdoors','nature'],
             'linksTo': ['hiking.info','travel.net']},
-           {'URL': 'travel.net','tokens': ['travel','vacation','destinations','adventure'],
+           {'URL': 'travel.net','tokens': ['travel','vacation','destinations','adventure','favorite'],
             'linksTo': ['camping.com','airlines.info']},
-           {'URL': 'airlines.info','tokens': ['flights','airlines','travel','vacation'],'linksTo': ['travel.net']},
+           {'URL': 'airlines.info','tokens': ['flights','airlines','travel','vacation','favorite'],
+            'linksTo': ['travel.net']},
            {'URL': 'recipes.com','tokens': ['recipes','cooking','food','dinner','breakfast','lunch'],
             'linksTo': ['animals.com']}]
     # web = [{'URL': 'example.com','tokens': ['jaguar','mammal','felidae','family'],'linksTo': ['example.org']},
@@ -20,7 +23,7 @@ def myData():
     return web
 
 def mySearchString():
-    search_string = ['jaguar','family']
+    search_string = ['jaguar','family','nature','travel']
     return search_string
 
 def invertedIndex(data,searchString):
@@ -39,4 +42,13 @@ def invertedIndex(data,searchString):
         out_dict[token].sort(key = lambda x: x[1],reverse = True)
     return out_dict
 
-print(invertedIndex(myData(),mySearchString()))
+pprint(invertedIndex(myData(),mySearchString()))
+
+def pageRankSimulation(data, numIter, beta):
+    raise NotImplementedError
+
+def score(tfIdf, pageRankValue):
+    raise NotImplementedError
+
+def top1(invertedIndex, pageRank):
+    raise NotImplementedError
