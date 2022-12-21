@@ -12,10 +12,11 @@ def myData():
            {'URL': 'travel.net','tokens': ['travel','vacation','destinations','adventure'],
             'linksTo': ['camping.com','airlines.info']},
            {'URL': 'airlines.info','tokens': ['flights','airlines','travel','vacation'],'linksTo': ['travel.net']},
-           {'URL': 'recipes.com','tokens': ['recipes','cooking','food','dinner','breakfast','lunch'],'linksTo': []}]
-    web = [{'URL': 'example.com','tokens': ['jaguar','mammal','felidae','family'],'linksTo': ['example.org']},
-           {'URL': 'example.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],'linksTo': []},
-           {'URL': 'example.il','tokens': ['my','cat','big'],'linksTo': ['example.com','example.org']}]
+           {'URL': 'recipes.com','tokens': ['recipes','cooking','food','dinner','breakfast','lunch'],
+            'linksTo': ['animals.com']}]
+    # web = [{'URL': 'example.com','tokens': ['jaguar','mammal','felidae','family'],'linksTo': ['example.org']},
+    #        {'URL': 'example.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],'linksTo': []},
+    #        {'URL': 'example.il','tokens': ['my','cat','big'],'linksTo': ['example.com','example.org']}]
     return web
 
 def mySearchString():
@@ -32,11 +33,10 @@ def invertedIndex(data,searchString):
                 occurences = sum(t in d['tokens'] for d in data)
                 tf = url_dict['tokens'].count(t) / len(url_dict['tokens'])
                 idf = math.log2(len(url_dict['tokens']) / occurences)
-                out_dict[t].append([url_dict['URL'],tf * idf])
+                out_dict[t].append([url_dict['URL'],round(tf * idf,3)])
     # Sort the lists in the inverted index by descending tf-idf score
     for token in out_dict:
         out_dict[token].sort(key = lambda x: x[1],reverse = True)
     return out_dict
 
 print(invertedIndex(myData(),mySearchString()))
-
