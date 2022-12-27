@@ -145,6 +145,7 @@ def get_score_from_list_of_pairs(list_of_pairs, URL: str):
 def createTable(invertedIndex, pageRank):
     urls = set()
 
+    # finding all urls from the table (pretty sure can remove the invertedIndex part)
     for pair in pageRank:
         urls.add(pair[0])
 
@@ -152,10 +153,12 @@ def createTable(invertedIndex, pageRank):
         for pair in l:
             urls.add(pair[0])
 
+    # creating the table
     table = [("PageRank", [(url, get_score_from_list_of_pairs(pageRank, url)) for url in urls])]
     for keyword, l in invertedIndex.items():
         table.append((f"tfidf:{keyword}", [(url, get_score_from_list_of_pairs(l, url)) for url in urls]))
 
+    # sorting
     for keyword, l in table:
         l.sort(key=lambda p: p[1], reverse=True)
     return table
@@ -165,7 +168,10 @@ def top1(invertedIndex, pageRank):
     seen = set()
     scores = dict()
 
+    # all keywords we print
     keywords = ["PageRank"] + [f"tfidf:{keyword}" for keyword in invertedIndex]
+
+    # adding padding (0 for urls that not in columns)
     table = createTable(invertedIndex, pageRank)
 
     for keyword, (url, _) in roundrobin(*table):
@@ -181,8 +187,7 @@ def top1(invertedIndex, pageRank):
             if scores[url][1] == len(keywords):
                 seen.add(url)
         else:
-            # if not
-
+            # if not in dict
             # calculating the score
             score = get_score_from_table(table, url)
 
