@@ -204,6 +204,7 @@ def top1(invertedIndex, pageRank):
 
     return best_url
 
+
 def main():
     data = myData()
     search_strings = mySearchString()
