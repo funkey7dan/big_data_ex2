@@ -107,30 +107,35 @@ def score(tfIdf, pageRankValue):
     return 0.7 * tfIdf + 0.3 * pageRankValue
 
 
-def roundrobin(*iterables):
+def roundrobin(*pairs):
     """roundrobin('ABC', 'D', 'EF') --> A D E B F C"""
-    num_active = len(iterables)
-    nexts = cycle(iter(it).__next__ for it in iterables)  # .next on Python 2
+    num_active = len(pairs)
+    nexts = cycle((keyword, iter(it).__next__) for keyword, it in pairs)  # .next on Python 2
     while num_active:
         try:
-            for next in nexts:
-                yield next()
+            for keyword, next in nexts:
+                yield keyword, next()
         except StopIteration:
             # Remove the iterator we just exhausted from the cycle.
             num_active -= 1
             nexts = cycle(islice(nexts, num_active))
 
 
-def get_tfidf_score(invertedIndex, URL: str):
-    scores_sum = 0
-    for keyword, l in invertedIndex:
+def get_score_from_table(table, target_url):
+    pr = 0
+    for url, s in table[0][1]:
+        if target_url == url:
+            pr = s
+
+    tfidf_sum = 0
+    for keyword, l in table[1:]:
         for pair in l:
-            if pair[0] == URL:
-                scores_sum += pair[1]
-    return scores_sum
+            if pair[0] == target_url:
+                tfidf_sum += pair[1]
+    return score(tfidf_sum, pr)
 
 
-def get_score(list_of_pairs, URL: str):
+def get_score_from_list_of_pairs(list_of_pairs, URL: str):
     for pair in list_of_pairs:
         if pair[0] == URL:
             return pair[1]
@@ -147,9 +152,9 @@ def createTable(invertedIndex, pageRank):
         for pair in l:
             urls.add(pair[0])
 
-    table = [("PageRank", [(url, get_score(pageRank, url)) for url in urls])]
+    table = [("PageRank", [(url, get_score_from_list_of_pairs(pageRank, url)) for url in urls])]
     for keyword, l in invertedIndex.items():
-        table.append((f"tfidf:{keyword}", [(url, get_score(l, url)) for url in urls]))
+        table.append((f"tfidf:{keyword}", [(url, get_score_from_list_of_pairs(l, url)) for url in urls]))
 
     for keyword, l in table:
         l.sort(key=lambda p: p[1], reverse=True)
@@ -163,8 +168,41 @@ def top1(invertedIndex, pageRank):
     keywords = ["PageRank"] + [f"tfidf:{keyword}" for keyword in invertedIndex]
     table = createTable(invertedIndex, pageRank)
 
-    raise NotImplementedError
+    for keyword, (url, _) in roundrobin(*table):
+        print(f"sorted access to {url} in {keyword}")
 
+        # checking if in dict
+        dict_value = scores.get(url)
+        if dict_value:
+            # if in dict then add one to counter
+            scores[url] = (dict_value[0], dict_value[1] + 1)
+
+            # if we saw as columns then we need to move to seen
+            if scores[url][1] == len(keywords):
+                seen.add(url)
+        else:
+            # if not
+
+            # calculating the score
+            score = get_score_from_table(table, url)
+
+            # printing the random access (all but keyword)
+            temp = keywords[:]
+            temp.remove(keyword)
+            for k in temp:
+                print(f"random access to {url} in {k}")
+
+            # adding to dict
+            scores[url] = (score, 1)
+
+        # if seen is 1 then finish
+        if len(seen) >= 1:
+            break
+
+    # get top 1 from dict
+    best_url = max(scores, key=lambda k: scores[k][0])
+
+    return best_url
 
 def main():
     data = myData()
@@ -173,9 +211,9 @@ def main():
     inverted_index = invertedIndex(data, search_strings)
     pprint(inverted_index)
     page_rank = pageRankSimulation(data, 100000, 0.8)
-    sorted_pr = sorted(page_rank,key = lambda x: x[1],reverse = True)
+    sorted_pr = sorted(page_rank, key=lambda x: x[1], reverse=True)
     pprint(sorted_pr)
-    #top1(inverted_index, page_rank)
+    print(f"best url={top1(inverted_index, page_rank)}")
 
 
 if __name__ == "__main__":
