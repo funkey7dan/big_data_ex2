@@ -83,7 +83,7 @@ def pageRankSimulation(data, numIter, beta):
             website_i_outgoing_links = data[i]['linksTo']
             if website_j['URL'] in website_i_outgoing_links:
                 # if i -> j
-                adjacency_matrix[i, j] = 1 / len(website_i_outgoing_links)
+                adjacency_matrix[j, i] = 1 / len(website_i_outgoing_links)
 
     # creating dump matrix
     dump_matrix = numpy.full((amount_of_websites, amount_of_websites), 1 / amount_of_websites)
@@ -173,8 +173,9 @@ def main():
     inverted_index = invertedIndex(data, search_strings)
     pprint(inverted_index)
     page_rank = pageRankSimulation(data, 100000, 0.8)
-    pprint(page_rank)
-    top1(inverted_index, page_rank)
+    sorted_pr = sorted(page_rank,key = lambda x: x[1],reverse = True)
+    pprint(sorted_pr)
+    #top1(inverted_index, page_rank)
 
 
 if __name__ == "__main__":
