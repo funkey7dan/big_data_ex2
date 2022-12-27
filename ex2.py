@@ -54,7 +54,9 @@ def mySearchString():
 
 def invertedIndex(data, searchString):
     # The keys of the dictionary will be all the tokens in searchString, and the value for each token will be a list
-    # of lists
+    # of lists.
+    # Each inner list will include two values, a URL and its tf-idf score with respect to this token and
+    # document represented by the URL.
     out_dict = {s: [] for s in searchString}
     for url_dict in data:
         for t in set(url_dict['tokens']):
@@ -77,9 +79,9 @@ def pageRankSimulation(data, numIter, beta):
     # creating matrix
     amount_of_websites = len(data)
 
-    adjacency_matrix = numpy.zeros((amount_of_websites, amount_of_websites))
-    for i, website_i in enumerate(data):
-        for j, website_j in enumerate(data):
+    adjacency_matrix = numpy.zeros((amount_of_websites,amount_of_websites))
+    for i,website_i in enumerate(data):
+        for j,website_j in enumerate(data):
             website_i_outgoing_links = data[i]['linksTo']
             if website_j['URL'] in website_i_outgoing_links:
                 # if i -> j
@@ -94,7 +96,7 @@ def pageRankSimulation(data, numIter, beta):
     importance_vector = numpy.full((amount_of_websites,), 1 / amount_of_websites)
     # performing the iterations
     for i in range(numIter):
-        importance_vector = A.dot(importance_vector)
+        importance_vector = numpy.round(A.dot(importance_vector),3)
 
     output_list = []
     for i, website in enumerate(data):
@@ -207,7 +209,7 @@ def top1(invertedIndex, pageRank):
     # get top 1 from dict
     best_url = max(scores, key=lambda k: scores[k][0])
 
-    return best_url
+    return (best_url, round(scores[url][0],3))
 
 
 def main():
