@@ -68,7 +68,7 @@ def invertedIndex(data,searchString):
 
     return out_dict
 
-def pageRankSimulation2(data,numIter,beta):
+def pageRankSimulation(data,numIter,beta):
     # creating matrix
     amount_of_websites = len(data)
 
@@ -79,11 +79,11 @@ def pageRankSimulation2(data,numIter,beta):
             if website_j['URL'] in website_i_outgoing_links:
                 # if i -> j
                 adjacency_matrix[j,i] = 1 / len(website_i_outgoing_links)
-    result = numpy.all((adjacency_matrix == 0),axis = 0)
-    print('Rows that contain only zero:')
-    for i in range(len(result)):
-        if result[i]:
-            adjacency_matrix[i,i] = 1
+    # result = numpy.all((adjacency_matrix == 0),axis = 0)
+    # print('Rows that contain only zero:')
+    # for i in range(len(result)):
+    #     if result[i]:
+    #         adjacency_matrix[i,i] = 1
     #adjacency_matrix[0,1] = 1
     # creating dump matrix
     dump_matrix = numpy.full((amount_of_websites,amount_of_websites),1 / amount_of_websites)
@@ -102,13 +102,15 @@ def pageRankSimulation2(data,numIter,beta):
 
     return output_list
 
-def pageRankSimulation(data,numIter,beta):
+def pageRankSimulation2(data,numIter,beta):
     freq = {f['URL']: 0 for f in data}
     next_index = random.randint(0,len(data) - 1)
     page = data[next_index]
     jumps = 0
+    steps = 0
     for i in range(numIter):
-        freq[page['URL']] += 1 / numIter
+        steps += 1
+        freq[page['URL']] += 1
         next_index = random.randint(0,max(len(page['linksTo']) - 1,0))
         coin = random.randint(1,10)
         if coin <= beta * 10:
@@ -120,11 +122,12 @@ def pageRankSimulation(data,numIter,beta):
             next_index = random.randint(0,len(data) - 1)
             page = data[next_index]
             jumps += 1
-
+    for f in freq:
+        freq[f] /= steps
     output_list = []
     for i,website in enumerate(data):
         output_list.append([website['URL'],round(freq[website['URL']],3)])
-    print(f'prob of jump = {jumps/numIter}')
+    print(f'prob of jump = {jumps / numIter}')
     print(sum([x[1] for x in output_list]))
     return output_list
 
