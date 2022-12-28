@@ -115,6 +115,9 @@ def pageRankSimulation(data,numIter,beta):
         coin = random.randint(1,10)
         if coin <= beta * 10:
             if len(page['linksTo']) == 0:
+                next_index = random.randint(0,len(data) - 1)
+                page = data[next_index]
+                jumps += 1
                 continue
             page_str = page['linksTo'][next_index]
             page = next(i for i in data if i["URL"] == page_str)
@@ -133,7 +136,6 @@ def pageRankSimulation(data,numIter,beta):
 
 def score(tfIdf,pageRankValue):
     return 0.7 * tfIdf + 0.3 * pageRankValue
-
 def roundrobin(*pairs):
     """roundrobin('ABC', 'D', 'EF') --> A D E B F C"""
     num_active = len(pairs)
