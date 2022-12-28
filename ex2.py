@@ -68,7 +68,7 @@ def invertedIndex(data,searchString):
 
     return out_dict
 
-def pageRankSimulation(data,numIter,beta):
+def pageRankSimulation2(data,numIter,beta):
     # creating matrix
     amount_of_websites = len(data)
 
@@ -102,7 +102,7 @@ def pageRankSimulation(data,numIter,beta):
 
     return output_list
 
-def pageRankSimulation2(data,numIter,beta):
+def pageRankSimulation(data,numIter,beta):
     freq = {f['URL']: 0 for f in data}
     next_index = random.randint(0,len(data) - 1)
     page = data[next_index]
