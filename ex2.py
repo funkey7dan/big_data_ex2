@@ -48,25 +48,37 @@ def mySearchString():
     search_string = ['jaguar','family']
     return search_string
 
+
+# current values for example data assuming log10 :
+# {'jaguar': [['example.org', 0.05], ['example.com',0.04]], 'family': [['example.com', 0.12]]}
+
 def invertedIndex(data,searchString):
     # The keys of the dictionary will be all the tokens in searchString, and the value for each token will be a list
     # of lists.
     # Each inner list will include two values, a URL and its tf-idf score with respect to this token and
     # document represented by the URL.
-    out_dict = {s: [] for s in searchString}
+
+    invertedIndex = {s: [] for s in searchString}
     for url_dict in data:
-        for t in set(url_dict['tokens']):
-            if t in searchString:
-                tf = url_dict['tokens'].count(t) / len(url_dict['tokens'])
+        # build the term frequency dictionary for the current website
+        tf_dict = {}
+        for t in list(url_dict['tokens']):
+            if t in tf_dict:
+                tf_dict[t] += 1
+            else:
+                tf_dict[t] = 1
+        for t in searchString:
+            if t in tf_dict:
+                tf = tf_dict[t] / len(url_dict['tokens'])
                 occurrences = sum(t in d['tokens'] for d in data)
-                idf = math.log2(len(url_dict['tokens']) / occurrences)
-                out_dict[t].append([url_dict['URL'],round(tf * idf,3)])
+                idf = math.log10(len(data) / occurrences)
+                invertedIndex[t].append([url_dict['URL'],round(tf * idf,2)])
 
     # Sort the lists in the inverted index by descending tf-idf score
-    for token in out_dict:
-        out_dict[token].sort(key = lambda x: x[1],reverse = True)
+    for token in invertedIndex:
+        invertedIndex[token].sort(key = lambda x: x[1],reverse = True)
 
-    return out_dict
+    return invertedIndex
 
 def pageRankSimulation2(data,numIter,beta):
     # creating matrix
@@ -239,7 +251,7 @@ def main():
     search_strings = mySearchString()
     drawGraph(data)
     inverted_index = invertedIndex(data,search_strings)
-    pprint(inverted_index)
+    print(inverted_index)
     page_rank = pageRankSimulation(data,100000,0.8)
     sorted_pr = sorted(page_rank,key = lambda x: x[1],reverse = True)
     pprint(sorted_pr)
