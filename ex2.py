@@ -5,25 +5,25 @@ import random
 import numpy
 
 def myData():
-    # web = [{'URL': 'animals.com','tokens': ['jaguar','mammal','felidae','family','food'],
-    #         'linksTo': ['pets.org','nature.net']},
-    #        {'URL': 'pets.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],
-    #         'linksTo': ['animals.com']},{'URL': 'nature.net','tokens': ['trees','plants','flowers','nature',
-    #         'outdoors'],
-    #                                      'linksTo': ['animals.com','hiking.info']},
-    #        {'URL': 'hiking.info','tokens': ['hiking','trails','outdoors','nature'],
-    #         'linksTo': ['nature.net','camping.com']},
-    #        {'URL': 'camping.com','tokens': ['camping','tents','outdoors','nature'],
-    #         'linksTo': ['hiking.info','travel.net']},
-    #        {'URL': 'travel.net','tokens': ['travel','vacation','destinations','adventure','favorite'],
-    #         'linksTo': ['camping.com','airlines.info']},
-    #        {'URL': 'airlines.info','tokens': ['flights','airlines','travel','vacation','favorite'],
-    #         'linksTo': ['travel.net']},
-    #        {'URL': 'recipes.com','tokens': ['recipes','cooking','food','dinner','breakfast','lunch'],
-    #         'linksTo': ['animals.com']}]
-    web = [{'URL': 'example.com','tokens': ['jaguar','mammal','felidae','family'],'linksTo': ['example.org']},
-           {'URL': 'example.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],'linksTo': []},
-           {'URL': 'example.il','tokens': ['my','cat','big'],'linksTo': ['example.com','example.org']}]
+    web = [{'URL': 'animals.com','tokens': ['jaguar','mammal','felidae','family','food'],
+            'linksTo': ['pets.org','nature.net']},
+           {'URL': 'pets.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],
+            'linksTo': ['animals.com']},{'URL': 'nature.net','tokens': ['trees','plants','flowers','nature',
+            'outdoors'],
+                                         'linksTo': ['animals.com','hiking.info']},
+           {'URL': 'hiking.info','tokens': ['hiking','trails','outdoors','nature'],
+            'linksTo': ['nature.net','camping.com']},
+           {'URL': 'camping.com','tokens': ['camping','tents','outdoors','nature'],
+            'linksTo': ['hiking.info','travel.net']},
+           {'URL': 'travel.net','tokens': ['travel','vacation','destinations','adventure','favorite'],
+            'linksTo': ['camping.com','airlines.info']},
+           {'URL': 'airlines.info','tokens': ['flights','airlines','travel','vacation','favorite'],
+            'linksTo': ['travel.net']},
+           {'URL': 'recipes.com','tokens': ['recipes','cooking','food','dinner','breakfast','lunch'],
+            'linksTo': ['animals.com']}]
+    # web = [{'URL': 'example.com','tokens': ['jaguar','mammal','felidae','family'],'linksTo': ['example.org']},
+    #        {'URL': 'example.org','tokens': ['jaguar','cute','big','cat','jaguar','my','favorite'],'linksTo': []},
+    #        {'URL': 'example.il','tokens': ['my','cat','big'],'linksTo': ['example.com','example.org']}]
     return web
 
 def drawGraph(data):
@@ -44,12 +44,12 @@ def drawGraph(data):
     plt.savefig('graph.png')
 
 def mySearchString():
-    #search_string = ['jaguar','family','nature','travel']
-    search_string = ['jaguar','family']
+    search_string = ['jaguar','family','nature','travel']
+    #search_string = ['jaguar','family']
     return search_string
 
 
-# current values for example data assuming log10 :
+# correct values for example data assuming log10 :
 # {'jaguar': [['example.org', 0.05], ['example.com',0.04]], 'family': [['example.com', 0.12]]}
 
 def invertedIndex(data,searchString):
@@ -142,8 +142,8 @@ def pageRankSimulation(data,numIter,beta):
     output_list = []
     for i,website in enumerate(data):
         output_list.append([website['URL'],round(freq[website['URL']],3)])
-    print(f'prob of jump = {jumps / numIter}')
-    print(sum([x[1] for x in output_list]))
+    #print(f'prob of jump = {jumps / numIter}')
+    #print(sum([x[1] for x in output_list]))
     return output_list
 
 def score(tfIdf,pageRankValue):
