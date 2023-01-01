@@ -162,17 +162,23 @@ def roundrobin(*pairs):
             nexts = cycle(islice(nexts, num_active))
 
 
-def get_score_from_table(table, target_url):
+def get_score_from_table(target_keyword, table, target_url):
     pr = 0
+    if target_keyword != "PageRank":
+        print(f"random access to {target_url} in PageRank")
     for url, s in table[0][1]:
         if target_url == url:
             pr = s
 
+
     tfidf_sum = 0
     for keyword, l in table[1:]:
         for pair in l:
-            if pair[0] == target_url:
+            if pair[0] == target_url and pair[1] != 0:
                 tfidf_sum += pair[1]
+                if keyword != target_keyword:
+                    print(f"random access to {target_url} in {keyword}")
+                break
     return score(tfidf_sum, pr)
 
 
@@ -230,13 +236,7 @@ def top1(invertedIndex, pageRank):
         else:
             # if not in dict
             # calculating the score
-            score = get_score_from_table(table, url)
-
-            # printing the random access (all but keyword)
-            for k in keywords:
-                if k == keyword:
-                    continue
-                print(f"random access to {url} in {k}")
+            score = get_score_from_table(keyword, table, url)
 
             # adding to dict
             scores[url] = (score, 1)
